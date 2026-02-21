@@ -5,46 +5,27 @@
 <hibernate-configuration>
     <session-factory>
         <!-- Database connection settings -->
-        <property name="hibernate.connection.driver_class">org.sqlite.JDBC</property>
-        <property name="hibernate.connection.url">jdbc:sqlite:test.db</property>
-        
-        <!-- SQLite dialect for Hibernate 6.x -->
-        <property name="hibernate.dialect">org.hibernate.community.dialect.SQLiteDialect</property>
-        
-        <!-- Connection pool -->
-        <property name="hibernate.connection.pool_size">1</property>
-        <property name="hibernate.current_session_context_class">thread</property>
-        
-        <!-- Explicitly disable multi-tenancy -->
-        <property name="hibernate.multi_tenant_connection_provider"></property>
-        <property name="hibernate.multi_tenant.datasource"></property>
-        <property name="hibernate.tenant_identifier_resolver"></property>
-        
-        <!-- Disable JTA -->
-        <property name="hibernate.transaction.coordinator_class">jdbc</property>
-        <property name="hibernate.transaction.jta.platform"></property>
-        
-        <!-- Echo all executed SQL to stdout -->
+        <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
+        <property name="hibernate.connection.url">jdbc:postgresql://localhost:5432/your_database</property>
+        <property name="hibernate.connection.username">postgres</property>
+        <!--property name="hibernate.connection.password">your_password</property-->
+
+        <!-- Connection pool settings (using HikariCP) -->
+        <property name="hibernate.hikari.connectionTimeout">20000</property>
+        <property name="hibernate.hikari.minimumIdle">5</property>
+        <property name="hibernate.hikari.maximumPoolSize">20</property>
+        <property name="hibernate.hikari.idleTimeout">300000</property>
+
+        <!-- Hibernate properties -->
+        <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
         <property name="hibernate.show_sql">true</property>
         <property name="hibernate.format_sql">true</property>
-        
-        <!-- Schema generation -->
         <property name="hibernate.hbm2ddl.auto">update</property>
-        <property name="hibernate.hbm2ddl.create_namespaces">true</property>
         
-        <!-- Disable all caching -->
-        <property name="hibernate.cache.use_second_level_cache">false</property>
-        <property name="hibernate.cache.use_query_cache">false</property>
-        
-        <!-- Batch processing -->
-        <property name="hibernate.jdbc.batch_size">15</property>
-        
-        <!-- Connection handling -->
-        <property name="hibernate.connection.release_mode">auto</property>
-        <property name="hibernate.connection.autocommit">false</property>
-        
-        <!-- Entity mapping -->
+        <!-- Current session context -->
+        <property name="hibernate.current_session_context_class">thread</property>
+
+        <!-- Entity mappings -->
         <mapping class="com.example.entity.User"/>
-        <mapping class="com.example.entity.Product"/>
     </session-factory>
 </hibernate-configuration>
