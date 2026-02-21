@@ -8,42 +8,57 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 
 public class HibernateUtil {
     
-    private static StandardServiceRegistry registry;
     private static SessionFactory sessionFactory;
     
-    public static SessionFactory getSessionFactory() {
-        if (sessionFactory == null) {
-            try {
-                // Create registry
-                registry = new StandardServiceRegistryBuilder()
-                        .configure() // Loads hibernate.cfg.xml
-                        .build();
-                
-                // Create MetadataSources
-                MetadataSources sources = new MetadataSources(registry);
-                
-                // Create Metadata
-                Metadata metadata = sources.getMetadataBuilder().build();
-                
-                // Create SessionFactory
-                sessionFactory = metadata.getSessionFactoryBuilder().build();
-                
-            } catch (Exception e) {
-                e.printStackTrace();
-                if (registry != null) {
-                    StandardServiceRegistryBuilder.destroy(registry);
-                }
-            }
+    static {
+        try {
+            System.out.println("Initializing Hibernate 6.x...");
+            
+            // Create registry with explicit configuration
+            StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
+                    .configure("hibernate.cfg.xml")
+                    .build();
+            
+            System.out.println("✓ ServiceRegistry created");
+            
+            // Create MetadataSources
+            MetadataSources sources = new MetadataSources(registry);
+            
+            // Add annotated classes
+            sources.addAnnotatedClass(com.example.entity.User.class);
+            sources.addAnnotatedClass(com.example.entity.Product.class);
+            
+            System.out.println("✓ Entity classes registered");
+            
+            // Build metadata
+            Metadata metadata = sources.getMetadataBuilder().build();
+            
+            System.out.println("✓ Metadata created");
+            
+            // Build SessionFactory
+            sessionFactory = metadata.getSessionFactoryBuilder().build();
+            
+            System.out.println("✓ SessionFactory created successfully!");
+            
+        } catch (Exception e) {
+            System.err.println("SessionFactory creation failed: " + e.getMessage());
+            e.printStackTrace();
+            throw new ExceptionInInitializerError(e);
         }
+    }
+    
+    public static SessionFactory getSessionFactory() {
         return sessionFactory;
     }
     
     public static void shutdown() {
-        if (registry != null) {
-            StandardServiceRegistryBuilder.destroy(registry);
-        }
         if (sessionFactory != null) {
-            sessionFactory.close();
+            try {
+                sessionFactory.close();
+                System.out.println("SessionFactory closed");
+            } catch (Exception e) {
+                System.err.println("Error closing SessionFactory: " + e.getMessage());
+            }
         }
     }
 }

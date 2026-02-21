@@ -8,20 +8,42 @@
         <property name="hibernate.connection.driver_class">org.sqlite.JDBC</property>
         <property name="hibernate.connection.url">jdbc:sqlite:test.db</property>
         
-        <!-- SQLite dialect -->
-        <property name="hibernate.dialect">org.hibernate.dialect.SQLiteDialect</property>
+        <!-- SQLite dialect for Hibernate 6.x -->
+        <property name="hibernate.dialect">org.hibernate.community.dialect.SQLiteDialect</property>
+        
+        <!-- Connection pool -->
+        <property name="hibernate.connection.pool_size">1</property>
+        <property name="hibernate.current_session_context_class">thread</property>
+        
+        <!-- Explicitly disable multi-tenancy -->
+        <property name="hibernate.multi_tenant_connection_provider"></property>
+        <property name="hibernate.multi_tenant.datasource"></property>
+        <property name="hibernate.tenant_identifier_resolver"></property>
+        
+        <!-- Disable JTA -->
+        <property name="hibernate.transaction.coordinator_class">jdbc</property>
+        <property name="hibernate.transaction.jta.platform"></property>
         
         <!-- Echo all executed SQL to stdout -->
         <property name="hibernate.show_sql">true</property>
         <property name="hibernate.format_sql">true</property>
         
-        <!-- Drop and re-create the database schema on startup -->
+        <!-- Schema generation -->
         <property name="hibernate.hbm2ddl.auto">update</property>
+        <property name="hibernate.hbm2ddl.create_namespaces">true</property>
         
-        <!-- Connection pool -->
-        <property name="hibernate.connection.pool_size">10</property>
+        <!-- Disable all caching -->
+        <property name="hibernate.cache.use_second_level_cache">false</property>
+        <property name="hibernate.cache.use_query_cache">false</property>
         
-        <!-- List of annotated entity classes -->
+        <!-- Batch processing -->
+        <property name="hibernate.jdbc.batch_size">15</property>
+        
+        <!-- Connection handling -->
+        <property name="hibernate.connection.release_mode">auto</property>
+        <property name="hibernate.connection.autocommit">false</property>
+        
+        <!-- Entity mapping -->
         <mapping class="com.example.entity.User"/>
         <mapping class="com.example.entity.Product"/>
     </session-factory>
